@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 
-export function DashboardLayout() {
+export default function DashboardLayout() {
     return (
         <>
             <header>Dashboard Layout</header>
