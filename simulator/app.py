@@ -1,7 +1,9 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from finance import CalculerMensualité39_bis2_ANCIEN
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/', methods=['GET'])
 def home():
@@ -10,7 +12,7 @@ def home():
     })
 
 @app.route('/api/v1/', methods=['GET'])
-def home():
+def api_v1():
     return jsonify({
         "message": "Hello",
     })
