@@ -8,3 +8,14 @@ services:
       - ./simulator:/app
     environment:
       - FLASK_ENV=development
+
+  frontend:
+    build: ./frontend
+    container_name: vite-react-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
