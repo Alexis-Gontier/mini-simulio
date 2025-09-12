@@ -12,6 +12,26 @@ services:
     volumes:
       - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
 
+  backend-adonis:
+    build: ./backend
+    container_name: backend-adonis
+    ports:
+      - "3333:3333"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - PORT=3333
+      - HOST=0.0.0.0
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_DATABASE=app
+    depends_on:
+      - db
+
   backend-flask:
     build: ./simulator
     container_name: backend-flask
@@ -31,4 +51,5 @@ services:
       - ./frontend:/app
       - /app/node_modules
     depends_on:
+      - backend-adonis
       - backend-flask
