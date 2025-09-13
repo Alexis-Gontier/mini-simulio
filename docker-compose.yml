@@ -21,6 +21,7 @@ services:
       - ./backend:/app
       - /app/node_modules
     environment:
+      - CI=true
       - NODE_ENV=development
       - PORT=3333
       - HOST=0.0.0.0
@@ -50,6 +51,8 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
+    environment:
+      - CI=true
     depends_on:
       - backend-adonis
       - backend-flask
