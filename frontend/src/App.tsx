@@ -11,6 +11,7 @@ import DashboardPage from "@/pages/dashboard-page";
 import SimulatorPage from "@/pages/simulator-page";
 import LoginPage from "@/pages/auth/login-page";
 import RegisterPage from "@/pages/auth/register-page";
+import ProtectedLayout from "./layouts/protected-layout";
 
 export default function App() {
   return (
@@ -22,9 +23,11 @@ export default function App() {
           <Route path="test" element={<h1>Test</h1>} />
         </Route>
 
-        <Route path="dashboard" element={<DashboardLayout />}>
-          <Route index element={<DashboardPage />} />
-          <Route path="simulator" element={<SimulatorPage />} />
+        <Route path="dashboard" element={<ProtectedLayout />}>
+          <Route element={<DashboardLayout />}>
+            <Route index element={<DashboardPage />} />
+            <Route path="simulator" element={<SimulatorPage />} />
+          </Route>
         </Route>
 
         <Route path="auth" element={<AuthLayout />}>
@@ -32,7 +35,7 @@ export default function App() {
           <Route path="register" element={<RegisterPage />} />
         </Route>
 
-        <Route path="*" element={<div>404 Not Found</div>} />
+        <Route path="*" element={<div>404</div>} />
       </Routes>
     </BrowserRouter>
   )

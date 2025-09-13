@@ -25,3 +25,7 @@ export const userLoginResponseSchema = z.object({
         value: z.string(),
     }),
 });
+
+export const userLogoutResponseSchema = z.object({
+    message: z.literal("Logout successful"),
+});
