@@ -1,10 +1,18 @@
-import { Button } from "@/components/shadcn-ui/button"
+import { Button } from "@/components/shadcn-ui/button";
+import { toast } from "sonner";
 
 export default function HomePage() {
+
+  const handleClick = () => {
+    console.log("Button clicked!");
+    toast.success("Form submitted successfully!")
+  }
+
   return (
     <div>
-      <h1>Home Page</h1>
-      <Button>Click Me</Button>
+      <Button onClick={handleClick}>
+        Home
+      </Button>
     </div>
   )
 }

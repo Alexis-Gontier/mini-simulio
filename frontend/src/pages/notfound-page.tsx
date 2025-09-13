@@ -1,9 +1,5 @@
-type Props = {
-    test: string
-}
-
-export default function NotFoundPage({ test }: Props) {
+export default function NotFoundPage() {
   return (
-    <div>Not Found Page {test}</div>
+    <div>Not Found Page</div>
   )
 }
