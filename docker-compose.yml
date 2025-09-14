@@ -9,8 +9,6 @@ services:
       MYSQL_DATABASE: app
     ports:
       - "3306:3306"
-    volumes:
-      - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
 
   backend-adonis:
     build: ./backend
