@@ -53,6 +53,9 @@ services:
       - /app/node_modules
     environment:
       - CI=true
+      - VITE_FRONTEND_URL=http://localhost:5173
+      - VITE_BACKEND_URL=http://localhost:3333
+      - VITE_SIMULATOR_URL=http://localhost:5000
     depends_on:
       - backend-adonis
       - backend-flask
