@@ -107,7 +107,7 @@ export async function logOut() {
             },
         });
 
-        localStorage.removeItem('authToken');
+        tokenUtils.remove();
 
         return {
             success: true,
@@ -116,11 +116,13 @@ export async function logOut() {
 
     } catch (error) {
         if (isResponseError(error)) {
+            tokenUtils.remove();
             return {
                 success: false,
                 message: error.message,
             };
         }
+        tokenUtils.remove();
 
         return {
             success: false,
