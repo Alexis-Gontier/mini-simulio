@@ -7,13 +7,13 @@ import AuthLayout from "@/layouts/auth-layout";
 
 // Pages
 import HomePage from "@/pages/home-page";
-import DashboardPage from "@/pages/dashboard-page";
-import SimulatorPage from "@/pages/simulator-page";
+import DashboardPage from "@/pages/dashboard/dashboard-page";
+import SimulatorPage from "@/pages/dashboard/simulator-page";
 import LoginPage from "@/pages/auth/login-page";
 import RegisterPage from "@/pages/auth/register-page";
 import ProtectedLayout from "@/layouts/protected-layout";
-import ApiPage from "@/pages/api-page";
-import ClientPage from "@/pages/client-page";
+import ApiPage from "@/pages/dashboard/api-page";
+import ClientPage from "@/pages/dashboard/client-page";
 
 export default function App() {
   return (

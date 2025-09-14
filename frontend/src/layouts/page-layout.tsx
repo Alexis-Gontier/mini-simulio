@@ -2,11 +2,12 @@ type Props = {
   children: React.ReactNode,
   title?: string,
   description?: string,
+  className?: string
 }
 
-export default function PageLayout({ children, title, description }: Props) {
+export default function PageLayout({ children, title, description, className }: Props) {
   return (
-    <div className="space-y-6">
+    <div className={`space-y-6 ${className}`}>
         <div className="space-y-1">
             <h2 className="text-3xl font-bold">
                 {title}
