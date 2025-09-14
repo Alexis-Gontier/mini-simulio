@@ -12,7 +12,8 @@ import { Button } from "../shadcn-ui/button"
 import {
     HomeIcon,
     Calculator,
-    Users
+    Users,
+    Server,
 } from "lucide-react"
 
 export function AppSidebar() {
@@ -26,7 +27,7 @@ export function AppSidebar() {
             icon: HomeIcon,
         },
         {
-            href: "/simulators",
+            href: "/simulator",
             label: "Simulateurs",
             icon: Calculator,
         },
@@ -34,6 +35,11 @@ export function AppSidebar() {
             href: "/clients",
             label: "Clients",
             icon: Users,
+        },
+        {
+            href: "/api",
+            label: "API",
+            icon: Server,
         },
     ]
 
