@@ -15,6 +15,7 @@ import ProtectedLayout from "@/layouts/protected-layout";
 import ApiPage from "@/pages/dashboard/api-page";
 import ClientPage from "@/pages/dashboard/client-page";
 import ClientByIdPage from "@/pages/dashboard/client-by-id-page";
+import SavePage from "./pages/dashboard/save-page";
 
 export default function App() {
   return (
@@ -31,7 +32,8 @@ export default function App() {
             <Route index element={<DashboardPage />} />
             <Route path="simulator" element={<SimulatorPage />} />
             <Route path="clients" element={<ClientPage />} />
-            <Route path="clients/:id" element={<ClientByIdPage />} />
+            <Route path="clients/:clientId" element={<ClientByIdPage />} />
+            <Route path="save" element={<SavePage />} />
             <Route path="api" element={<ApiPage />} />
             <Route path="*" element={<div>404</div>} />
           </Route>
