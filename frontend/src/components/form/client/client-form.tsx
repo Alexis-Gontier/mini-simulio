@@ -14,8 +14,6 @@ import { Button } from "@/components/shadcn-ui/button"
 
 import { toast } from "sonner"
 
-import { useTransition } from "react"
-
 import {
     clientSchema,
     type ClientInput
@@ -25,11 +23,11 @@ import {
     Send,
     Loader
 } from "lucide-react"
-import { createClient } from "@/api/backend/clients/service"
+import { useCreateClient } from "@/api/backend/clients/hook"
 
 export function ClientForm() {
 
-    const [isPending, startTransition] = useTransition()
+    const createClientMutation = useCreateClient()
 
     const form = useForm<ClientInput>({
         resolver: zodResolver(clientSchema),
@@ -40,12 +38,17 @@ export function ClientForm() {
     })
 
     function onSubmit(values: ClientInput) {
-        startTransition(async () => {
-            const { success, message } = await createClient(values)
-            if (success) {
-                toast.success("Client créé avec succès")
-            } else {
-                toast.error(message || "Une erreur est survenue")
+        createClientMutation.mutate(values, {
+            onSuccess: (data) => {
+                if (data.success) {
+                    toast.success("Client créé avec succès")
+                    form.reset()
+                } else {
+                    toast.error(data.message || "Une erreur est survenue")
+                }
+            },
+            onError: () => {
+                toast.error("Une erreur est survenue")
             }
         })
     }
@@ -84,8 +87,9 @@ export function ClientForm() {
                 <Button
                     type="submit"
                     className="w-full cursor-pointer"
+                    disabled={createClientMutation.isPending}
                 >
-                    {isPending ? <Loader className="animate-spin" /> : <Send />}
+                    {createClientMutation.isPending ? <Loader className="animate-spin" /> : <Send />}
                     Ajouter un client
                 </Button>
             </form>

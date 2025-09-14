@@ -1,6 +1,7 @@
 import {
     useQuery,
-    useMutation
+    useMutation,
+    useQueryClient
 } from "@tanstack/react-query";
 import {
     getClient,
@@ -16,8 +17,13 @@ export function useClients() {
 }
 
 export function useCreateClient() {
+    const queryClient = useQueryClient();
+
     return useMutation({
         mutationKey: ['createClient'],
         mutationFn: (data: unknown) => createClient(data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['clients'] });
+        },
     });
 }
