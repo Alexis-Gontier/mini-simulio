@@ -21,12 +21,14 @@ import {
     type CalculerMensualite39Bis2Ancien
 } from "@/schemas/simulator-schema"
 import { calculerMensualite39Bis2Ancien } from "@/api/simulator/calcules/service"
+import { useSimulationStore } from "@/stores/simulation-store"
 import { SliderInput } from "@/components/ui/slider-input"
 import { DefaultInput } from "@/components/ui/default-input"
 
 export default function SimulatorForm() {
 
     const [isPending, startTransition] = useTransition()
+    const { saveSimulation, setLoading, setError } = useSimulationStore()
 
     const form = useForm<CalculerMensualite39Bis2Ancien>({
         resolver: zodResolver(calculerMensualite39Bis2AncienSchema),
@@ -48,15 +50,17 @@ export default function SimulatorForm() {
     function onSubmit(values: CalculerMensualite39Bis2Ancien) {
         console.log(values)
         startTransition(async () => {
+            setLoading(true)
+            setError(null)
+
             const { success, message, data } = await calculerMensualite39Bis2Ancien(values)
             if (success) {
                 toast.success(message)
                 console.log(data)
-                localStorage.setItem("lastSimulation", JSON.stringify(data))
-                // Déclencher un événement pour mettre à jour l'affichage
-                window.dispatchEvent(new Event('simulationUpdated'))
+                saveSimulation(data, values)
             } else {
                 toast.error(message)
+                setError(message)
             }
         })
     }

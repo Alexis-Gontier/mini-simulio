@@ -1,6 +1,7 @@
 import {
   Card,
   CardContent,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/shadcn-ui/card"
@@ -8,42 +9,9 @@ import SimulatorForm from "@/components/form/simulator/simulator-form"
 import SimulationResults from "@/components/simulator/simulation-results"
 import PageLayout from "@/layouts/page-layout"
 import { Separator } from "@/components/shadcn-ui/separator"
-import { useEffect, useState } from "react"
+import SaveSimulationButton from "@/components/simulator/save-simulation-button"
 
 export default function SimulatorPage() {
-  const [lastSimulation, setLastSimulation] = useState(null)
-
-  useEffect(() => {
-    const simulation = localStorage.getItem("lastSimulation")
-    if (simulation) {
-      setLastSimulation(JSON.parse(simulation))
-    }
-
-    // Écouter les changements dans localStorage
-    const handleStorageChange = () => {
-      const updatedSimulation = localStorage.getItem("lastSimulation")
-      if (updatedSimulation) {
-        setLastSimulation(JSON.parse(updatedSimulation))
-      }
-    }
-
-    window.addEventListener('storage', handleStorageChange)
-
-    // Écouter les changements internes (même onglet)
-    const handleInternalUpdate = () => {
-      const updatedSimulation = localStorage.getItem("lastSimulation")
-      if (updatedSimulation) {
-        setLastSimulation(JSON.parse(updatedSimulation))
-      }
-    }
-
-    window.addEventListener('simulationUpdated', handleInternalUpdate)
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange)
-      window.removeEventListener('simulationUpdated', handleInternalUpdate)
-    }
-  }, [])
 
   return (
     <PageLayout
@@ -71,8 +39,11 @@ export default function SimulatorPage() {
           </CardHeader>
           <Separator />
           <CardContent>
-            <SimulationResults data={lastSimulation} />
+            <SimulationResults />
           </CardContent>
+          <CardFooter>
+            <SaveSimulationButton />
+          </CardFooter>
         </Card>
       </div>
     </PageLayout>

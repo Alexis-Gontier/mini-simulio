@@ -1,4 +1,5 @@
 import { Badge } from "@/components/shadcn-ui/badge"
+import { useSimulationStore } from "@/stores/simulation-store"
 import {
   Calculator,
   Home,
@@ -10,23 +11,31 @@ import {
   TrendingUp
 } from "lucide-react"
 
-interface SimulationData {
-  mensualite: number
-  prix_du_bien: number
-  frais_de_notaire: number
-  garantie_bancaire: number
-  travaux: number
-  frais_agence: number
-  total_a_financer: number
-  revenu_acquereur_minimum_mensuel: number
-}
+export default function SimulationResults() {
+  const { currentSimulation, isLoading, error } = useSimulationStore()
 
-interface SimulationResultsProps {
-  data: SimulationData | null
-}
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-48 text-muted-foreground">
+        <div className="text-center">
+          <Calculator className="h-12 w-12 mx-auto mb-4 opacity-50 animate-pulse" />
+          <p>Calcul en cours...</p>
+        </div>
+      </div>
+    )
+  }
 
-export default function SimulationResults({ data }: SimulationResultsProps) {
-  if (!data) {
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-48 text-destructive">
+        <div className="text-center">
+          <p>Erreur : {error}</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!currentSimulation) {
     return (
       <div className="flex items-center justify-center h-48 text-muted-foreground">
         <div className="text-center">
@@ -50,51 +59,51 @@ export default function SimulationResults({ data }: SimulationResultsProps) {
   const resultItems = [
     {
       label: "Mensualité",
-      value: formatCurrency(data.mensualite),
+      value: formatCurrency(currentSimulation.mensualite),
       icon: Calculator,
       highlight: true,
       description: "Montant mensuel à rembourser"
     },
     {
       label: "Prix du bien",
-      value: formatCurrency(data.prix_du_bien),
+      value: formatCurrency(currentSimulation.prix_du_bien),
       icon: Home,
       description: "Prix d'achat du bien immobilier"
     },
     {
       label: "Frais de notaire",
-      value: formatCurrency(data.frais_de_notaire),
+      value: formatCurrency(currentSimulation.frais_de_notaire),
       icon: FileText,
       description: "Frais de notaire calculés"
     },
     {
       label: "Garantie bancaire",
-      value: formatCurrency(data.garantie_bancaire),
+      value: formatCurrency(currentSimulation.garantie_bancaire),
       icon: Shield,
       description: "Garantie demandée par la banque"
     },
     {
       label: "Travaux",
-      value: formatCurrency(data.travaux),
+      value: formatCurrency(currentSimulation.travaux),
       icon: Wrench,
       description: "Montant des travaux prévus"
     },
     {
       label: "Frais d'agence",
-      value: formatCurrency(data.frais_agence),
+      value: formatCurrency(currentSimulation.frais_agence),
       icon: Building,
       description: "Frais d'agence immobilière"
     },
     {
       label: "Total à financer",
-      value: formatCurrency(data.total_a_financer),
+      value: formatCurrency(currentSimulation.total_a_financer),
       icon: Banknote,
       highlight: true,
       description: "Montant total du financement"
     },
     {
       label: "Revenu minimum requis",
-      value: formatCurrency(data.revenu_acquereur_minimum_mensuel),
+      value: formatCurrency(currentSimulation.revenu_acquereur_minimum_mensuel),
       icon: TrendingUp,
       highlight: true,
       description: "Revenu mensuel minimum nécessaire"
