@@ -1,10 +1,14 @@
 import LogoutButton from "@/components/ui/logout-button";
+import PageLayout from "@/layouts/page-layout";
 
 export default function DashboardPage() {
 
   return (
-    <div>
+    <PageLayout
+      title="Dashboard"
+      description="Bienvenue sur le tableau de bord"
+    >
       <LogoutButton />
-    </div>
+    </PageLayout>
   )
 }

@@ -64,9 +64,9 @@ export function AppSidebar() {
                             return (
                                 <Button
                                     key={item.href}
-                                    className="w-full"
                                     variant={isActive ? "outline" : "ghost"}
                                     size="lg"
+                                    className="w-full font-semibold"
                                     asChild
                                 >
                                     <Link to={fullPath} className="flex justify-start">

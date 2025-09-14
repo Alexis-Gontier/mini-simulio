@@ -1,15 +1,14 @@
+import PageLayout from "@/layouts/page-layout"
 import { ENV } from "@/lib/env"
 
 export default function ApiPage() {
 
 
     return (
-        <div className="space-y-6 p-6">
-            <div className="space-y-2">
-                <h2 className="text-3xl font-bold">Configuration API</h2>
-                <p className="text-muted-foreground">Variables d'environnement et configuration</p>
-            </div>
-
+        <PageLayout
+            title="Configuration API"
+            description="Variables d'environnement et configurations"
+        >
             <div className="p-4 border rounded-lg space-y-2">
                 <h2 className="text-xl font-semibold">Environnement</h2>
                 <p className="font-mono">
@@ -33,6 +32,6 @@ export default function ApiPage() {
                 </p>
             </div>
 
-        </div>
+        </PageLayout>
     )
 }

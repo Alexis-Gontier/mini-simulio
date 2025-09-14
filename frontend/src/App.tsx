@@ -13,6 +13,7 @@ import LoginPage from "@/pages/auth/login-page";
 import RegisterPage from "@/pages/auth/register-page";
 import ProtectedLayout from "@/layouts/protected-layout";
 import ApiPage from "@/pages/api-page";
+import ClientPage from "@/pages/client-page";
 
 export default function App() {
   return (
@@ -28,7 +29,7 @@ export default function App() {
           <Route element={<DashboardLayout />}>
             <Route index element={<DashboardPage />} />
             <Route path="simulator" element={<SimulatorPage />} />
-            <Route path="clients" element={<p>clients</p>} />
+            <Route path="clients" element={<ClientPage />} />
             <Route path="clients/:id" element={<p>client by id</p>} />
             <Route path="api" element={<ApiPage />} />
             <Route path="*" element={<div>404</div>} />
