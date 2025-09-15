@@ -7,12 +7,12 @@ Interface utilisateur moderne pour le système de simulation financière Mini Si
 - **Framework**: React 19
 - **Langage**: TypeScript
 - **Build Tool**: Vite
-- **Styling**: Tailwind CSS 4
-- **UI Components**: Radix UI
+- **Styling**: Tailwind CSS v4
+- **UI Components**: shadcn/ui
 - **State Management**: Zustand
-- **Data Fetching**: TanStack React Query
+- **Data Fetching**: TanStack React Query, up-fetch
 - **Routing**: React Router DOM
-- **Forms**: React Hook Form + Zod
+- **Forms + validation**: React Hook Form + Zod
 - **Icons**: Lucide React
 - **Themes**: Next Themes
 
