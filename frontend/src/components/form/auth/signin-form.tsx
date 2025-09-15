@@ -28,7 +28,7 @@ import {
     Loader
 } from "lucide-react"
 
-export function SigninForm() {
+export function SignupForm() {
 
     const [isPending, startTransition] = useTransition()
     const navigate = useNavigate()
