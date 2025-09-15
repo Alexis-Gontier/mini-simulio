@@ -10,6 +10,7 @@
 ```bash
 docker-compose up -d
 ```
+!Attendre quelques secondes
 
 ### 2. Exécuter les migrations de base de données
 ```bash
