@@ -1,25 +1,16 @@
 import { z } from 'zod';
 
-const FIRSTNAME_MIN_LENGTH = 2;
-const FIRSTNAME_MAX_LENGTH = 50;
-const LASTNAME_MIN_LENGTH = 2;
-const LASTNAME_MAX_LENGTH = 50;
+const NAME_MIN_LENGTH = 2;
+const NAME_MAX_LENGTH = 50;
 const PASSWORD_MIN_LENGTH = 6;
 const PASSWORD_MAX_LENGTH = 100;
 
 const fullNameValidation = z.string()
-  .min(FIRSTNAME_MIN_LENGTH)
-  .max(FIRSTNAME_MAX_LENGTH)
-  .refine((val) => {
-    const [firstName, lastName] = val.split(" ");
-    return (
-      firstName.length >= FIRSTNAME_MIN_LENGTH &&
-      firstName.length <= FIRSTNAME_MAX_LENGTH &&
-      lastName.length >= LASTNAME_MIN_LENGTH &&
-      lastName.length <= LASTNAME_MAX_LENGTH
-    );
-  }, {
-    message: "Le nom complet doit contenir un prénom et un nom de famille valides."
+  .min(NAME_MIN_LENGTH, {
+    message: `Le nom complet doit contenir au moins ${NAME_MIN_LENGTH} caractères.`
+  })
+  .max(NAME_MAX_LENGTH, {
+    message: `Le nom complet ne doit pas dépasser ${NAME_MAX_LENGTH} caractères.`
   });
 
 const emailValidation = z
