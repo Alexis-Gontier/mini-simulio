@@ -5,7 +5,7 @@ import {
     userLogoutResponseSchema,
     userRegistrationResponseSchema
 } from "@/api/backend/auth/schema";
-import { loginSchema } from "@/schemas/auth-schema";
+import { loginSchema, signUpSchema } from "@/schemas/auth-schema";
 import { tokenUtils } from "@/lib/token";
 
 export async function signIn(data: unknown) {
@@ -50,7 +50,7 @@ export async function signIn(data: unknown) {
 
 export async function signUp(data: unknown) {
 
-    const parsedData = loginSchema.safeParse(data);
+    const parsedData = signUpSchema.safeParse(data);
     if (!parsedData.success) {
         return {
             success: false,
