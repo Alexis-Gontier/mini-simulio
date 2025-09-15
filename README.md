@@ -50,8 +50,8 @@ python app.py
 ### Frontend Vite + React
 ```bash
 cd frontend
-npm install
-npm run dev
+pnpm install
+pnpm dev
 # Serveur sur http://localhost:5173
 ```
 
