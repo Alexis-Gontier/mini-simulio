@@ -4,7 +4,7 @@ import {
   CardFooter,
 } from "@/components/shadcn-ui/card"
 import { LoginForm } from "@/components/form/auth/login-form";
-import { Link } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function LoginPage() {
   return (
@@ -13,7 +13,7 @@ export default function LoginPage() {
         <LoginForm />
       </CardContent>
       <CardFooter>
-        <Link href="/auth/register">
+        <Link to="/auth/register">
           Pas encore de compte ? Inscrivez-vous
         </Link>
       </CardFooter>
