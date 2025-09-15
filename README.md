@@ -89,37 +89,6 @@ curl -X POST http://localhost:3333/api/auth/login \
 ### Simulateur (Flask)
 - `POST /api/calculate` - Calculer une mensualité de prêt immobilier
 
-#### Paramètres de calcul
-```json
-{
-  "N": 20,                      // Durée du prêt en années
-  "C2": 200000,                 // Prix du bien immobilier
-  "T": 1.5,                     // Taux d'intérêt annuel (%)
-  "ASSU": 0.36,                 // Taux d'assurance annuel (%)
-  "apport": 20000,              // Apport personnel
-  "mois": 1,                    // Mois de début du prêt
-  "annee": 2024,                // Année de début du prêt
-  "fraisAgence": 5000,          // Frais d'agence
-  "fraisNotaire": 0,            // Frais de notaire (0 = calcul automatique)
-  "TRAVAUX": 10000,             // Montant des travaux
-  "revalorisationBien": 2       // Taux de revalorisation du bien (%)
-}
-```
-
-#### Réponse
-```json
-{
-  "mensualite": 1234.56,                         // Mensualité calculée
-  "prix_du_bien": 200000,                        // Prix du bien
-  "frais_de_notaire": 15000.00,                  // Frais de notaire calculés
-  "garantie_bancaire": 2700.00,                  // Garantie bancaire
-  "travaux": 10000,                              // Montant des travaux
-  "frais_agence": 10000.00,                      // Frais d'agence finaux
-  "total_a_financer": 225000.00,                 // Montant total à financer
-  "revenu_acquereur_minimum_mensuel": 3526       // Revenu minimum requis
-}
-```
-
 ## 🗄️ Base de données
 
 ### Structure
