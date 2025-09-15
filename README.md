@@ -111,4 +111,3 @@ docker-compose down
 ## 📝 Notes importantes
 - Les tokens d'authentification sont requis pour toutes les routes protégées
 - La base de données est persistée dans un volume Docker
-- Le fichier `dump.sql` est chargé automatiquement au premier démarrage
