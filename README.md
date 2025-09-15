@@ -38,6 +38,7 @@ pnpm install
 pnpm dev
 # Serveur sur http://localhost:3333
 ```
+*copier le .env.example*
 
 ### Backend Flask (Simulateur)
 ```bash
@@ -54,6 +55,7 @@ pnpm install
 pnpm dev
 # Serveur sur http://localhost:5173
 ```
+*copier le .env.example*
 
 ## 🔑 API d'authentification
 
