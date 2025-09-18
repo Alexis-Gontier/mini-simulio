@@ -22,7 +22,7 @@ function createFormStore<T, R = unknown>(
 
   return create<FormStore>()(
     persist(
-      (set, get, api) => ({
+      (set, _get, api) => ({
         formData: null,
         result: null,
         isCalculating: false,

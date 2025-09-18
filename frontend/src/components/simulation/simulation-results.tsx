@@ -18,7 +18,11 @@ type SimulationResult = {
   mensualite?: number
   total_a_financer?: number
   revenu_acquereur_minimum_mensuel?: number
-  // add other properties if needed
+  prix_du_bien?: number
+  frais_de_notaire?: number
+  garantie_bancaire?: number
+  travaux?: number
+  frais_agence?: number
 }
 
 export default function SimulationResults() {

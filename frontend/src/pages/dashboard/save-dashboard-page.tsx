@@ -102,19 +102,19 @@ export default function SaveDashboardPage() {
                         <div className="grid grid-cols-2 gap-4 text-sm">
                             <div>
                                 <span className="text-muted-foreground">Mensualité:</span>
-                                <div className="font-semibold">{currentSimulation.mensualite.toLocaleString('fr-FR')} €</div>
+                                <div className="font-semibold">{(currentSimulation as any)?.mensualite?.toLocaleString('fr-FR') || 0} €</div>
                             </div>
                             <div>
                                 <span className="text-muted-foreground">Prix du bien:</span>
-                                <div className="font-semibold">{currentSimulation.prix_du_bien.toLocaleString('fr-FR')} €</div>
+                                <div className="font-semibold">{(currentSimulation as any)?.prix_du_bien?.toLocaleString('fr-FR') || 0} €</div>
                             </div>
                             <div>
                                 <span className="text-muted-foreground">Total à financer:</span>
-                                <div className="font-semibold">{currentSimulation.total_a_financer.toLocaleString('fr-FR')} €</div>
+                                <div className="font-semibold">{(currentSimulation as any)?.total_a_financer?.toLocaleString('fr-FR') || 0} €</div>
                             </div>
                             <div>
                                 <span className="text-muted-foreground">Revenu minimum:</span>
-                                <div className="font-semibold">{currentSimulation.revenu_acquereur_minimum_mensuel.toLocaleString('fr-FR')} €</div>
+                                <div className="font-semibold">{(currentSimulation as any)?.revenu_acquereur_minimum_mensuel?.toLocaleString('fr-FR') || 0} €</div>
                             </div>
                         </div>
                         <Badge variant="secondary" className="w-fit">
@@ -169,9 +169,9 @@ export default function SaveDashboardPage() {
                         </Alert>
                     )}
 
-                    {clientsData?.clients && (
+                    {clientsData && 'clients' in clientsData && clientsData.clients && (
                         <div className="grid gap-2">
-                            {clientsData.clients.map((client) => (
+                            {clientsData.clients.map((client: any) => (
                                 <div
                                     key={client.id}
                                     onClick={() => setSelectedClientId(client.id)}
@@ -195,7 +195,7 @@ export default function SaveDashboardPage() {
                         </div>
                     )}
 
-                    {clientsData?.clients?.length === 0 && (
+                    {clientsData && 'clients' in clientsData && clientsData.clients?.length === 0 && (
                         <Alert>
                             <AlertDescription>
                                 Aucun client trouvé. Vous devez d'abord créer un client.

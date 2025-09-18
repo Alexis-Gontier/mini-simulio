@@ -3,7 +3,6 @@ import { useClient } from '@/api/backend/clients/hook';
 import { useSimulations } from '@/api/backend/simulations/hook';
 import PageLayout from '@/layouts/page-layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/shadcn-ui/card';
-import { Badge } from '@/components/shadcn-ui/badge';
 import { Button } from '@/components/shadcn-ui/button';
 import { Alert, AlertDescription } from '@/components/shadcn-ui/alert';
 import { Skeleton } from '@/components/shadcn-ui/skeleton';
@@ -12,14 +11,10 @@ import {
   ArrowLeft,
   User,
   Mail,
-  Phone,
-  MapPin,
   Calendar,
   Calculator,
   Plus,
-  FileText,
-  Eye,
-  Trash2
+  FileText
 } from 'lucide-react';
 
 export default function ClientByIdPage() {
@@ -75,7 +70,7 @@ export default function ClientByIdPage() {
     }
 
     const client = clientData.client;
-    const simulations = simulationsData?.simulations || [];
+    const simulations = simulationsData && 'simulations' in simulationsData ? simulationsData.simulations : [];
 
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('fr-FR', {
@@ -96,7 +91,7 @@ export default function ClientByIdPage() {
 
     return (
         <PageLayout
-            title={client.fullName}
+            title={client?.fullName || 'Client'}
             description="Détails du client et ses simulations"
             className="max-w-6xl mx-auto"
         >
@@ -134,7 +129,7 @@ export default function ClientByIdPage() {
                                     <User className="w-4 h-4" />
                                     <span className="text-sm">Nom complet</span>
                                 </div>
-                                <p className="font-semibold">{client.fullName}</p>
+                                <p className="font-semibold">{client?.fullName}</p>
                             </div>
 
                             <div className="space-y-2">
@@ -142,30 +137,10 @@ export default function ClientByIdPage() {
                                     <Mail className="w-4 h-4" />
                                     <span className="text-sm">Email</span>
                                 </div>
-                                <p className="font-semibold">{client.email}</p>
+                                <p className="font-semibold">{client?.email}</p>
                             </div>
 
-                            {client.phone && (
-                                <div className="space-y-2">
-                                    <div className="flex items-center gap-2 text-muted-foreground">
-                                        <Phone className="w-4 h-4" />
-                                        <span className="text-sm">Téléphone</span>
-                                    </div>
-                                    <p className="font-semibold">{client.phone}</p>
-                                </div>
-                            )}
-
-                            {client.address && (
-                                <div className="space-y-2">
-                                    <div className="flex items-center gap-2 text-muted-foreground">
-                                        <MapPin className="w-4 h-4" />
-                                        <span className="text-sm">Adresse</span>
-                                    </div>
-                                    <p className="font-semibold">{client.address}</p>
-                                </div>
-                            )}
-
-                            {client.createdAt && (
+                            {client?.createdAt && (
                                 <div className="space-y-2">
                                     <div className="flex items-center gap-2 text-muted-foreground">
                                         <Calendar className="w-4 h-4" />

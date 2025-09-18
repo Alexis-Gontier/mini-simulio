@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import PageLayout from '@/layouts/page-layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/shadcn-ui/card';
 import { Badge } from '@/components/shadcn-ui/badge';
@@ -61,7 +61,7 @@ export default function ApiTestPage() {
       const responseTime = Date.now() - startTime;
 
       // Vérifier que la réponse contient {"hello":"world"}
-      if (response && typeof response === 'object' && response.hello === 'world') {
+      if (response && typeof response === 'object' && 'hello' in response && (response as any).hello === 'world') {
         return { success: true, responseTime, data: response };
       } else {
         return { success: false, responseTime, error: 'Invalid response format', data: response };
@@ -86,7 +86,7 @@ export default function ApiTestPage() {
       const responseTime = Date.now() - startTime;
 
       // Vérifier que la réponse contient {"hello":"world"}
-      if (response && typeof response === 'object' && response.hello === 'world') {
+      if (response && typeof response === 'object' && 'hello' in response && (response as any).hello === 'world') {
         return { success: true, responseTime, data: response };
       } else {
         return { success: false, responseTime, error: 'Invalid response format', data: response };
