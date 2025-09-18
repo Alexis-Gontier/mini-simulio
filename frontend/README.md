@@ -1,104 +1,69 @@
-# Frontend - Mini Simulio
+# React + TypeScript + Vite
 
-## Description
-Interface utilisateur moderne pour le système de simulation financière Mini Simulio, développée avec React et TypeScript.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Technologies
-- **Framework**: React 19
-- **Langage**: TypeScript
-- **Build Tool**: Vite
-- **Styling**: Tailwind CSS v4
-- **UI Components**: shadcn/ui
-- **State Management**: Zustand
-- **Data Fetching**: TanStack React Query, up-fetch
-- **Routing**: React Router DOM
-- **Forms + validation**: React Hook Form + Zod
-- **Icons**: Lucide React
-- **Themes**: Next Themes
+Currently, two official plugins are available:
 
-## Installation
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-### Prérequis
-- Node.js (version 18+)
-- pnpm
+## Expanding the ESLint configuration
 
-### Configuration
-1. Copier le fichier d'environnement :
-```bash
-cp .env.example .env
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+
+```js
+export default tseslint.config([
+  globalIgnores(["dist"]),
+  {
+    files: ["**/*.{ts,tsx}"],
+    extends: [
+      // Other configs...
+
+      // Remove tseslint.configs.recommended and replace with this
+      ...tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      ...tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      ...tseslint.configs.stylisticTypeChecked,
+
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
 
-2. Configurer les variables d'environnement dans `.env` :
-```env
-VITE_API_URL=http://localhost:3333
-VITE_SIMULATOR_URL=http://localhost:5000
-```
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-3. Installer les dépendances :
-```bash
-pnpm install
-```
+```js
+// eslint.config.js
+import reactX from "eslint-plugin-react-x"
+import reactDom from "eslint-plugin-react-dom"
 
-## Démarrage
-
-### Mode développement
-```bash
-pnpm dev
-```
-L'application sera accessible sur `http://localhost:5173`
-
-### Build de production
-```bash
-pnpm build
-```
-
-### Prévisualisation de production
-```bash
-pnpm preview
-```
-
-## Fonctionnalités
-
-### Authentification
-- Connexion et inscription utilisateur
-- Gestion des sessions avec JWT
-- Protection des routes
-
-### Gestion des clients
-- Liste des clients
-- Création, modification et suppression de clients
-- Interface intuitive pour la gestion des données client
-
-### Simulations financières
-- Création de simulations personnalisées
-- Visualisation des résultats
-- Historique des simulations par client
-- Export des données
-
-### Interface utilisateur
-- Design moderne et responsive
-- Mode sombre/clair
-- Animations fluides
-- Composants accessibles
-
-## Composants principaux
-
-### Pages
-- `/login` - Page de connexion
-- `/register` - Page d'inscription
-- `/dashboard` - Tableau de bord principal
-- `/clients` - Gestion des clients
-- `/clients/:id/simulations` - Simulations d'un client
-- `/simulations/:id` - Détail d'une simulation
-
-## Scripts disponibles
-- `pnpm dev` - Démarrage en mode développement
-- `pnpm build` - Build de production
-- `pnpm lint` - Vérification du code avec ESLint
-- `pnpm preview` - Prévisualisation du build
-
-## Docker
-Le frontend peut être démarré avec Docker en utilisant le docker-compose.yml du projet racine :
-```bash
-docker-compose up -d frontend
+export default tseslint.config([
+  globalIgnores(["dist"]),
+  {
+    files: ["**/*.{ts,tsx}"],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs["recommended-typescript"],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```

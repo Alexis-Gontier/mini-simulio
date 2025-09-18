@@ -1,18 +1,15 @@
 import {
   Card,
   CardContent,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/shadcn-ui/card"
-import SimulatorForm from "@/components/form/simulator/simulator-form"
-import SimulationResults from "@/components/simulator/simulation-results"
+import SimulationForm from "@/components/form/simulation-form"
 import PageLayout from "@/layouts/page-layout"
 import { Separator } from "@/components/shadcn-ui/separator"
-import SaveSimulationButton from "@/components/simulator/save-simulation-button"
+import SimulationResults from "@/components/simulation/simulation-results"
 
-export default function SimulatorPage() {
-
+export default function SimulationsDashboardPage() {
   return (
     <PageLayout
       title="Simulateur"
@@ -28,7 +25,7 @@ export default function SimulatorPage() {
           </CardHeader>
           <Separator />
           <CardContent>
-            <SimulatorForm />
+            <SimulationForm />
           </CardContent>
         </Card>
         <Card className="h-fit">
@@ -41,9 +38,6 @@ export default function SimulatorPage() {
           <CardContent>
             <SimulationResults />
           </CardContent>
-          <CardFooter>
-            <SaveSimulationButton />
-          </CardFooter>
         </Card>
       </div>
     </PageLayout>

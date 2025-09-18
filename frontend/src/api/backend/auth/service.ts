@@ -1,132 +1,164 @@
-import { backendApi } from "@/api/backend/client";
-import { isResponseError } from 'up-fetch'
+import { backendApi } from "@/api/backend/client"
+import { isResponseError } from "up-fetch"
 import {
-    userLoginResponseSchema,
-    userLogoutResponseSchema,
-    userRegistrationResponseSchema
-} from "@/api/backend/auth/schema";
-import { loginSchema, signUpSchema } from "@/schemas/auth-schema";
-import { tokenUtils } from "@/lib/token";
+  userLoginResponseSchema,
+  userLogoutResponseSchema,
+  userRegistrationResponseSchema,
+  userMeResponseSchema,
+} from "@/api/backend/auth/schema"
+import { loginSchema, registerSchema } from "@/schemas/auth-schema"
+import { useAuthStore } from "@/stores/auth-store"
 
 export async function signIn(data: unknown) {
+  const parsedData = loginSchema.safeParse(data)
+  if (!parsedData.success) {
+    return {
+      success: false,
+      message: "Invalid data",
+    }
+  }
 
-    const parsedData = loginSchema.safeParse(data);
-    if (!parsedData.success) {
-        return {
-            success: false,
-            message: "Invalid data",
-        }
+  try {
+    const response = await backendApi("/api/auth/login", {
+      method: "POST",
+      schema: userLoginResponseSchema,
+      body: parsedData.data,
+    })
+
+    useAuthStore.getState().login(response.token.value)
+
+    return {
+      success: true,
+      message: response.message,
+      data: response.user,
+    }
+  } catch (error) {
+    if (isResponseError(error)) {
+      return {
+        success: false,
+        message: error.message,
+      }
     }
 
-    try {
-        const response = await backendApi('/api/auth/login', {
-            method: 'POST',
-            schema: userLoginResponseSchema,
-            body: parsedData.data,
-        });
-
-        tokenUtils.set(response.token.value);
-
-        return {
-            success: true,
-            message: response.message,
-            data: response.user,
-        };
-
-    } catch (error) {
-        if (isResponseError(error)) {
-            return {
-                success: false,
-                message: error.message,
-            };
-        }
-
-        return {
-            success: false,
-            message: "Network error or unexpected response format",
-        };
+    return {
+      success: false,
+      message: "Network error or unexpected response format",
     }
+  }
 }
 
 export async function signUp(data: unknown) {
+  const parsedData = registerSchema.safeParse(data)
+  if (!parsedData.success) {
+    return {
+      success: false,
+      message: "Invalid data",
+    }
+  }
 
-    const parsedData = signUpSchema.safeParse(data);
-    if (!parsedData.success) {
-        return {
-            success: false,
-            message: "Invalid data",
-        }
+  try {
+    const response = await backendApi("/api/auth/register", {
+      method: "POST",
+      schema: userRegistrationResponseSchema,
+      body: parsedData.data,
+    })
+
+    useAuthStore.getState().login(response.token.value)
+
+    return {
+      success: true,
+      message: response.message,
+      data: response.user,
+    }
+  } catch (error) {
+    if (isResponseError(error)) {
+      return {
+        success: false,
+        message: error.message,
+      }
     }
 
-    try {
-        const response = await backendApi('/api/auth/register', {
-            method: 'POST',
-            schema: userRegistrationResponseSchema,
-            body: parsedData.data,
-        });
-
-        tokenUtils.set(response.token.value);
-
-        return {
-            success: true,
-            message: response.message,
-            data: response.user,
-        };
-
-    } catch (error) {
-        if (isResponseError(error)) {
-            return {
-                success: false,
-                message: error.message,
-            };
-        }
-
-        return {
-            success: false,
-            message: "Network error or unexpected response format",
-        };
+    return {
+      success: false,
+      message: "Network error or unexpected response format",
     }
+  }
 }
 
 export async function logOut() {
+  const token = useAuthStore.getState().token
+  if (!token) {
+    return {
+      success: false,
+      message: "No auth token found in localStorage",
+    }
+  }
 
-    const token = tokenUtils.get();
-    if (!token) {
-        return {
-            success: false,
-            message: "No auth token found in localStorage",
-        };
+  try {
+    const response = await backendApi("/api/auth/logout", {
+      method: "POST",
+      schema: userLogoutResponseSchema,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    useAuthStore.getState().logout()
+
+    return {
+      success: true,
+      message: response.message,
+    }
+  } catch (error) {
+    if (isResponseError(error)) {
+      useAuthStore.getState().logout()
+      return {
+        success: false,
+        message: error.message,
+      }
+    }
+    useAuthStore.getState().logout()
+
+    return {
+      success: false,
+      message: "Network error or unexpected response format",
+    }
+  }
+}
+
+export async function me() {
+  const token = useAuthStore.getState().token
+  if (!token) {
+    return {
+      success: false,
+      message: "No auth token found",
+    }
+  }
+
+  try {
+    const response = await backendApi("/api/auth/me", {
+      method: "GET",
+      schema: userMeResponseSchema,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    return {
+      success: true,
+      data: response.user,
+    }
+  } catch (error) {
+    if (isResponseError(error)) {
+      return {
+        success: false,
+        message: error.message,
+      }
     }
 
-    try {
-        const response = await backendApi('/api/auth/logout', {
-            method: 'POST',
-            schema: userLogoutResponseSchema,
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-
-        tokenUtils.remove();
-
-        return {
-            success: true,
-            message: response.message,
-        };
-
-    } catch (error) {
-        if (isResponseError(error)) {
-            tokenUtils.remove();
-            return {
-                success: false,
-                message: error.message,
-            };
-        }
-        tokenUtils.remove();
-
-        return {
-            success: false,
-            message: "Network error or unexpected response format",
-        };
+    return {
+      success: false,
+      message: "Network error or unexpected response format",
     }
+  }
 }
