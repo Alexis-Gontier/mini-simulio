@@ -3,18 +3,34 @@ import {
     SidebarHeader,
     SidebarContent,
     SidebarGroup,
-    // SidebarFooter,
+    SidebarFooter,
+    SidebarMenuButton,
     // useSidebar,
 } from "@/components/shadcn-ui/sidebar"
 import { Link, useLocation } from "react-router-dom"
-import { Button } from "../shadcn-ui/button"
+import { Button } from "@/components/shadcn-ui/button"
 
 import {
     HomeIcon,
     Calculator,
     Users,
+    ChevronsUpDown,
+    LogOut,
+    Moon,
+    Sun,
     Server,
 } from "lucide-react"
+import { useAuthStore } from "@/stores/auth-store"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+//   DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/shadcn-ui/dropdown-menu"
+import { Skeleton } from "@/components/shadcn-ui/skeleton"
+import { useTheme } from "@/providers/theme-provider"
 
 export function AppSidebar() {
     const location = useLocation()
@@ -27,19 +43,14 @@ export function AppSidebar() {
             icon: HomeIcon,
         },
         {
-            href: "/simulator",
-            label: "Simulateurs",
+            href: "/simulations",
+            label: "Simulations",
             icon: Calculator,
         },
         {
             href: "/clients",
             label: "Clients",
             icon: Users,
-        },
-        {
-            href: "/api",
-            label: "API",
-            icon: Server,
         },
     ]
 
@@ -59,7 +70,10 @@ export function AppSidebar() {
                     <nav className="space-y-1">
                         {LINKITEMS.map((item) => {
                             const fullPath = `/dashboard${item.href}`
-                            const isActive = pathname === fullPath
+                            // Normalise les chemins pour la comparaison
+                            const normalizedPathname = pathname.replace(/\/$/, '') || '/'
+                            const normalizedFullPath = fullPath.replace(/\/$/, '') || '/'
+                            const isActive = normalizedPathname === normalizedFullPath
 
                             return (
                                 <Button
@@ -79,6 +93,69 @@ export function AppSidebar() {
                     </nav>
                 </SidebarGroup>
             </SidebarContent>
+            <SidebarFooter>
+                <UserAccountDropdown />
+            </SidebarFooter>
         </Sidebar>
+    )
+}
+
+function UserAccountDropdown() {
+    const { user, logout } = useAuthStore()
+    const { theme, setTheme } = useTheme()
+
+    function toggleTheme() {
+        setTheme(theme === "light" ? "dark" : "light")
+    }
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <SidebarMenuButton className="py-6 cursor-pointer" variant="outline">
+                    <Skeleton className="aspect-square w-10" />
+                    <div className="grid flex-1 text-left text-sm leading-tight">
+                        <span className="truncate font-medium">{user ? `${user.fullName}` : "Non connecté"}</span>
+                        <span className="truncate text-xs">{user ? `${user.email}` : "email@exemple.com"}</span>
+                    </div>
+                    <ChevronsUpDown className="ml-auto size-4" />
+                </SidebarMenuButton>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent  className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg" sideOffset={4}>
+                <DropdownMenuItem
+                    className="cursor-pointer"
+                    asChild
+                >
+                    <Link to="/dashboard/profile">
+                        <Users />
+                        Mon profil
+                    </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                    className="cursor-pointer"
+                    asChild
+                >
+                    <Link to="/dashboard/api-test">
+                        <Server />
+                        Test des APIs
+                    </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={toggleTheme}
+                >
+                    {theme === "light" ? <Moon className="size-4" /> : <Sun className="size-4" />}
+                    Thème
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                    onClick={logout}
+                    variant="destructive"
+                    className="cursor-pointer"
+                >
+                    <LogOut />
+                    Se déconnecter
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
     )
 }

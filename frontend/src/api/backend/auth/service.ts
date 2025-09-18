@@ -3,10 +3,11 @@ import { isResponseError } from 'up-fetch'
 import {
     userLoginResponseSchema,
     userLogoutResponseSchema,
-    userRegistrationResponseSchema
+    userRegistrationResponseSchema,
+    userMeResponseSchema
 } from "@/api/backend/auth/schema";
-import { loginSchema, signUpSchema } from "@/schemas/auth-schema";
-import { tokenUtils } from "@/lib/token";
+import { loginSchema, registerSchema } from "@/schemas/auth-schema";
+import { useAuthStore } from "@/stores/auth-store";
 
 export async function signIn(data: unknown) {
 
@@ -25,7 +26,7 @@ export async function signIn(data: unknown) {
             body: parsedData.data,
         });
 
-        tokenUtils.set(response.token.value);
+        useAuthStore.getState().login(response.token.value);
 
         return {
             success: true,
@@ -50,7 +51,7 @@ export async function signIn(data: unknown) {
 
 export async function signUp(data: unknown) {
 
-    const parsedData = signUpSchema.safeParse(data);
+    const parsedData = registerSchema.safeParse(data);
     if (!parsedData.success) {
         return {
             success: false,
@@ -65,7 +66,7 @@ export async function signUp(data: unknown) {
             body: parsedData.data,
         });
 
-        tokenUtils.set(response.token.value);
+        useAuthStore.getState().login(response.token.value);
 
         return {
             success: true,
@@ -90,7 +91,7 @@ export async function signUp(data: unknown) {
 
 export async function logOut() {
 
-    const token = tokenUtils.get();
+    const token = useAuthStore.getState().token;
     if (!token) {
         return {
             success: false,
@@ -107,7 +108,7 @@ export async function logOut() {
             },
         });
 
-        tokenUtils.remove();
+        useAuthStore.getState().logout();
 
         return {
             success: true,
@@ -116,13 +117,51 @@ export async function logOut() {
 
     } catch (error) {
         if (isResponseError(error)) {
-            tokenUtils.remove();
+            useAuthStore.getState().logout();
             return {
                 success: false,
                 message: error.message,
             };
         }
-        tokenUtils.remove();
+        useAuthStore.getState().logout();
+
+        return {
+            success: false,
+            message: "Network error or unexpected response format",
+        };
+    }
+}
+
+export async function me() {
+    const token = useAuthStore.getState().token;
+    if (!token) {
+        return {
+            success: false,
+            message: "No auth token found",
+        };
+    }
+
+    try {
+        const response = await backendApi('/api/auth/me', {
+            method: 'GET',
+            schema: userMeResponseSchema,
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return {
+            success: true,
+            data: response.user,
+        };
+
+    } catch (error) {
+        if (isResponseError(error)) {
+            return {
+                success: false,
+                message: error.message,
+            };
+        }
 
         return {
             success: false,

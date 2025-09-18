@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useClients } from '@/api/backend/clients/hook';
 import { useCreateSimulation } from '@/api/backend/simulations/hook';
-import { useSimulationStore } from '@/stores/simulation-store';
+import { useSimulationStore } from '@/stores/simulations-store';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/shadcn-ui/card';
 import { Button } from '@/components/shadcn-ui/button';
 import { Input } from '@/components/shadcn-ui/input';
@@ -13,15 +13,15 @@ import { Skeleton } from '@/components/shadcn-ui/skeleton';
 import { Save, ArrowLeft, User, Calendar } from 'lucide-react';
 import { toast } from 'sonner';
 
-export default function SavePage() {
+export default function SaveDashboardPage() {
     const navigate = useNavigate();
     const [selectedClientId, setSelectedClientId] = useState<number | null>(null);
     const [simulationName, setSimulationName] = useState('');
 
     const { data: clientsData, isLoading: clientsLoading, isError: clientsError } = useClients();
-    const createSimulation = useCreateSimulation();
+    const createSimulationMutation = useCreateSimulation();
 
-    const { currentSimulation, simulationInput } = useSimulationStore();
+    const { result: currentSimulation, formData: simulationInput } = useSimulationStore();
 
     const handleSaveSimulation = async () => {
         if (!selectedClientId || !simulationName.trim() || !currentSimulation || !simulationInput) {
@@ -39,7 +39,7 @@ export default function SavePage() {
         };
 
         try {
-            const result = await createSimulation.mutateAsync({
+            const result = await createSimulationMutation.mutateAsync({
                 clientId: selectedClientId,
                 data: simulationData
             });
@@ -51,6 +51,7 @@ export default function SavePage() {
                 toast.error(result.message || 'Erreur lors de la sauvegarde');
             }
         } catch (error) {
+            console.error('Error saving simulation:', error);
             toast.error('Erreur lors de la sauvegarde');
         }
     };
@@ -64,7 +65,7 @@ export default function SavePage() {
                     </AlertDescription>
                 </Alert>
                 <Button
-                    onClick={() => navigate('/dashboard')}
+                    onClick={() => navigate('/dashboard/simulations')}
                     className="mt-4"
                     variant="outline"
                 >
@@ -79,7 +80,7 @@ export default function SavePage() {
         <div className="container mx-auto p-6 max-w-4xl space-y-6">
             <div className="flex items-center gap-4">
                 <Button
-                    onClick={() => navigate('/dashboard')}
+                    onClick={() => navigate('/dashboard/simulations')}
                     variant="outline"
                     size="sm"
                 >
@@ -208,10 +209,10 @@ export default function SavePage() {
             <div className="flex justify-end">
                 <Button
                     onClick={handleSaveSimulation}
-                    disabled={!selectedClientId || !simulationName.trim() || createSimulation.isPending}
+                    disabled={!selectedClientId || !simulationName.trim() || createSimulationMutation.isPending}
                     size="lg"
                 >
-                    {createSimulation.isPending ? (
+                    {createSimulationMutation.isPending ? (
                         'Sauvegarde en cours...'
                     ) : (
                         <>

@@ -26,7 +26,7 @@ export default function ClientsTable() {
                 </CardHeader>
                 <CardContent>
                     <div className="space-y-2">
-                        {[...Array(5)].map((_, i) => (
+                        {[...Array(3)].map((_, i) => (
                             <Skeleton key={i} className="h-12 w-full" />
                         ))}
                     </div>
@@ -45,7 +45,17 @@ export default function ClientsTable() {
         );
     }
 
-    if (!data?.clients || data.clients.length === 0) {
+    if (!data || !('clients' in data)) {
+        return (
+            <Alert variant="destructive">
+                <AlertDescription>
+                    Format de données inattendu.
+                </AlertDescription>
+            </Alert>
+        );
+    }
+
+    if (!data.clients.length) {
         return (
             <Card>
                 <CardHeader>
@@ -102,11 +112,11 @@ export default function ClientsTable() {
                                         size="icon"
                                         asChild
                                     >
-                                    <Link
-                                        to={`/dashboard/clients/${client.id}`}
-                                    >
-                                        <Eye />
-                                    </Link>
+                                        <Link
+                                            to={`/dashboard/clients/${client.id}`}
+                                        >
+                                            <Eye />
+                                        </Link>
                                     </Button>
                                 </TableCell>
                             </TableRow>

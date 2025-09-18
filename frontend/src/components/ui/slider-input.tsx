@@ -36,8 +36,6 @@ export function SliderInput({ label, field, min, max, step, unit }: SliderInputP
                     <Input
                         type="number"
                         step={step}
-                        min={min}
-                        max={max}
                         id={field.name}
                         {...field}
                         onChange={(e) => field.onChange(e.target.valueAsNumber)}

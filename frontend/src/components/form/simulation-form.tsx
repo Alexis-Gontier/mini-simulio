@@ -20,49 +20,67 @@ import {
     calculerMensualite39Bis2AncienSchema,
     type CalculerMensualite39Bis2Ancien
 } from "@/schemas/simulator-schema"
-import { calculerMensualite39Bis2Ancien } from "@/api/simulator/calcules/service"
-import { useSimulationStore } from "@/stores/simulation-store"
+import { calculerMensualite39Bis2Ancien } from "@/api/simulations/calcules/service"
+import { useSimulationStore } from "@/stores/simulations-store"
 import { SliderInput } from "@/components/ui/slider-input"
 import { DefaultInput } from "@/components/ui/default-input"
 
-export default function SimulatorForm() {
+export default function SimulationForm() {
 
     const [isPending, startTransition] = useTransition()
-    const { saveSimulation, setLoading, setError } = useSimulationStore()
+    const {
+        formData,
+        setFormData,
+        setResult,
+        setCalculating,
+        clearAll
+    } = useSimulationStore()
 
     const form = useForm<CalculerMensualite39Bis2Ancien>({
         resolver: zodResolver(calculerMensualite39Bis2AncienSchema),
         defaultValues: {
-            C2: 834000,
-            TRAVAUX: 20000,
-            fraisAgence: 3,
-            N: 25,
-            apport: 50000,
-            fraisNotaire: 7.5,
-            T: 3.5,
-            ASSU: 0.32,
-            revalorisationBien: 1,
-            mois: "07",
-            annee: "2025",
+            C2: formData?.C2 ?? 0,
+            TRAVAUX: formData?.TRAVAUX ?? 0,
+            fraisAgence: formData?.fraisAgence ?? 0,
+            N: formData?.N ?? 0,
+            apport: formData?.apport ?? 0,
+            fraisNotaire: formData?.fraisNotaire ?? 0,
+            T: formData?.T ?? 0,
+            ASSU: formData?.ASSU ?? 0,
+            revalorisationBien: formData?.revalorisationBien ?? 0,
+            mois: formData?.mois ?? "07",
+            annee: formData?.annee ?? "2025",
         },
     })
 
     function onSubmit(values: CalculerMensualite39Bis2Ancien) {
         console.log(values)
         startTransition(async () => {
-            setLoading(true)
-            setError(null)
+            try {
+                setCalculating(true)
+                setFormData(values)
 
-            const { success, message, data } = await calculerMensualite39Bis2Ancien(values)
-            if (success) {
-                toast.success(message)
-                console.log(data)
-                saveSimulation(data, values)
-            } else {
-                toast.error(message)
-                setError(message)
+                const response = await calculerMensualite39Bis2Ancien(values)
+                console.log("Response from API:", response)
+                if (response.success && response.data) {
+                    console.log("Setting result:", response.data)
+                    setResult(response.data)
+                } else {
+                    throw new Error(response.message || "Erreur lors du calcul")
+                }
+                toast.success("Calcul de la mensualité réussi !")
+            } catch (error) {
+                console.error(error)
+                toast.error("Une erreur est survenue lors du calcul de la mensualité.")
+            } finally {
+                setCalculating(false)
             }
         })
+    }
+
+    function clear() {
+        clearAll()
+        form.reset()
     }
 
     return (
@@ -132,21 +150,20 @@ export default function SimulatorForm() {
                     render={({ field }) => <DefaultInput label="Revalorisation du bien" field={field} />}
                 />
 
-                {/* Mois */}
-
-
                 <div className="grid grid-cols-2 gap-2">
                     <Button
                         variant="outline"
                         className="w-full cursor-pointer"
                         type="button"
-                        onClick={() => form.reset()}
+                        onClick={clear}
+                        disabled={isPending}
                     >
                         Clear
                     </Button>
                     <Button
                         type="submit"
                         className="w-full cursor-pointer"
+                        disabled={isPending}
                     >
                         {isPending ? <Loader className="animate-spin" /> : <Send />}
                         Calculer

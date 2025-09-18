@@ -29,3 +29,13 @@ export const userLoginResponseSchema = z.object({
 export const userLogoutResponseSchema = z.object({
     message: z.literal("Logout successful"),
 });
+
+export const userMeResponseSchema = z.object({
+    user: z.object({
+        id: z.number(),
+        email: z.string().email(),
+        fullName: z.string(),
+        createdAt: z.string(),
+        updatedAt: z.string(),
+    }),
+});

@@ -1,5 +1,5 @@
 import { Badge } from "@/components/shadcn-ui/badge"
-import { useSimulationStore } from "@/stores/simulation-store"
+import { useSimulationStore } from "@/stores/simulations-store"
 import {
   Calculator,
   Home,
@@ -8,13 +8,29 @@ import {
   Wrench,
   Building,
   Banknote,
-  TrendingUp
+  TrendingUp,
+  Save
 } from "lucide-react"
+import { Button } from "../shadcn-ui/button"
+import { Link } from "react-router-dom"
+
+type SimulationResult = {
+  mensualite?: number
+  total_a_financer?: number
+  revenu_acquereur_minimum_mensuel?: number
+  // add other properties if needed
+}
 
 export default function SimulationResults() {
-  const { currentSimulation, isLoading, error } = useSimulationStore()
+  const {
+    result: simulationResult,
+    isCalculating,
+  } = useSimulationStore() as {
+    result: SimulationResult
+    isCalculating: boolean
+  }
 
-  if (isLoading) {
+  if (isCalculating) {
     return (
       <div className="flex items-center justify-center h-48 text-muted-foreground">
         <div className="text-center">
@@ -25,17 +41,7 @@ export default function SimulationResults() {
     )
   }
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-48 text-destructive">
-        <div className="text-center">
-          <p>Erreur : {error}</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (!currentSimulation) {
+  if (!simulationResult) {
     return (
       <div className="flex items-center justify-center h-48 text-muted-foreground">
         <div className="text-center">
@@ -56,54 +62,56 @@ export default function SimulationResults() {
     }).format(amount)
   }
 
+  // Les données d'entrée viennent de formData
+  // Les résultats calculés viennent de simulationResult
   const resultItems = [
     {
       label: "Mensualité",
-      value: formatCurrency(currentSimulation.mensualite),
+      value: formatCurrency(simulationResult.mensualite || 0),
       icon: Calculator,
       highlight: true,
       description: "Montant mensuel à rembourser"
     },
     {
       label: "Prix du bien",
-      value: formatCurrency(currentSimulation.prix_du_bien),
+      value: formatCurrency(simulationResult.prix_du_bien || 0),
       icon: Home,
       description: "Prix d'achat du bien immobilier"
     },
     {
       label: "Frais de notaire",
-      value: formatCurrency(currentSimulation.frais_de_notaire),
+      value: formatCurrency(simulationResult.frais_de_notaire || 0),
       icon: FileText,
       description: "Frais de notaire calculés"
     },
     {
       label: "Garantie bancaire",
-      value: formatCurrency(currentSimulation.garantie_bancaire),
+      value: formatCurrency(simulationResult.garantie_bancaire || 0),
       icon: Shield,
       description: "Garantie demandée par la banque"
     },
     {
       label: "Travaux",
-      value: formatCurrency(currentSimulation.travaux),
+      value: formatCurrency(simulationResult.travaux || 0),
       icon: Wrench,
       description: "Montant des travaux prévus"
     },
     {
       label: "Frais d'agence",
-      value: formatCurrency(currentSimulation.frais_agence),
+      value: formatCurrency(simulationResult.frais_agence || 0),
       icon: Building,
       description: "Frais d'agence immobilière"
     },
     {
       label: "Total à financer",
-      value: formatCurrency(currentSimulation.total_a_financer),
+      value: formatCurrency(simulationResult.total_a_financer || 0),
       icon: Banknote,
       highlight: true,
       description: "Montant total du financement"
     },
     {
       label: "Revenu minimum requis",
-      value: formatCurrency(currentSimulation.revenu_acquereur_minimum_mensuel),
+      value: formatCurrency(simulationResult.revenu_acquereur_minimum_mensuel || 0),
       icon: TrendingUp,
       highlight: true,
       description: "Revenu mensuel minimum nécessaire"
@@ -152,6 +160,15 @@ export default function SimulationResults() {
           )
         })}
       </div>
+        <Button
+            className="w-full"
+            asChild
+        >
+            <Link to="/dashboard/save">
+                <Save />
+                Enregister la simulation
+            </Link>
+        </Button>
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import { backendApi } from "@/api/backend/client";
 import { isResponseError } from 'up-fetch'
-import { tokenUtils } from "@/lib/token";
+import { useAuthStore } from "@/stores/auth-store";
 
 import {
     getClientsSchemaResponse,
@@ -8,7 +8,14 @@ import {
 } from "@/api/backend/clients/schema";
 
 export async function getClient() {
-    const token = tokenUtils.get();
+    const { isAuthenticated, token } = useAuthStore.getState();
+    if (!isAuthenticated) {
+        return {
+            success: false,
+            message: "User is not authenticated",
+        };
+    }
+
     if (!token) {
         return {
             success: false,
@@ -39,8 +46,76 @@ export async function getClient() {
     }
 }
 
+export async function getClientById(clientId: number) {
+    const { isAuthenticated, token } = useAuthStore.getState();
+    if (!isAuthenticated) {
+        return {
+            success: false,
+            message: "User is not authenticated",
+        };
+    }
+
+    if (!token) {
+        return {
+            success: false,
+            message: "No auth token found in localStorage",
+        };
+    }
+
+    try {
+        // Pour l'instant, on récupère tous les clients et on filtre
+        // TODO: Implémenter l'endpoint /api/clients/:id côté backend
+        const response = await backendApi('/api/clients', {
+            method: 'GET',
+            schema: getClientsSchemaResponse,
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (response.clients) {
+            const client = response.clients.find((c: any) => c.id === clientId);
+            if (client) {
+                return {
+                    success: true,
+                    client: client
+                };
+            } else {
+                return {
+                    success: false,
+                    message: "Client not found",
+                };
+            }
+        }
+
+        return {
+            success: false,
+            message: "No clients data received",
+        };
+    } catch (error) {
+        if (isResponseError(error)) {
+            return {
+                success: false,
+                message: error.message,
+            };
+        }
+
+        return {
+            success: false,
+            message: "Network error or unexpected response format",
+        };
+    }
+}
+
 export async function createClient(data: unknown) {
-    const token = tokenUtils.get();
+    const { isAuthenticated, token } = useAuthStore.getState();
+    if (!isAuthenticated) {
+        return {
+            success: false,
+            message: "User is not authenticated",
+        };
+    }
+
     if (!token) {
         return {
             success: false,

@@ -1,10 +1,16 @@
-import { simulatorApi } from "@/api/simulator/client";
+import { simulatorApi } from "@/api/simulations/client";
 import { isResponseError } from 'up-fetch'
-import { tokenUtils } from "@/lib/token";
-import { CalculerMensualite39Bis2AncienResponse } from "@/api/simulator/calcules/schema";
+import { CalculerMensualite39Bis2AncienResponse } from "@/api/simulations/calcules/schema";
+import { useAuthStore } from "@/stores/auth-store";
 
 export async function calculerMensualite39Bis2Ancien(data: unknown) {
-    const token = tokenUtils.get();
+    const { token, isAuthenticated } = useAuthStore.getState();
+    if (!isAuthenticated) {
+        return {
+            success: false,
+            message: "User is not authenticated",
+        };
+    }
     if (!token) {
         return {
             success: false,

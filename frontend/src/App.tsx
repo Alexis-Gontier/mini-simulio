@@ -1,40 +1,50 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate
+} from "react-router-dom";
 
+// ==============================
 // Layouts
-import MainLayout from "@/layouts/main-layout";
+// ==============================
 import DashboardLayout from "@/layouts/dashboard-layout";
 import AuthLayout from "@/layouts/auth-layout";
+import ProtectedLayout from "@/layouts/protected-layout";
 
+// ==============================
 // Pages
-import HomePage from "@/pages/home-page";
-import DashboardPage from "@/pages/dashboard/dashboard-page";
-import SimulatorPage from "@/pages/dashboard/simulator-page";
+// ==============================
+
+// Dashboard routes
+import HomeDashboardPage from "@/pages/dashboard/home-dashboard-page";
+
+// Authenticated routes
 import LoginPage from "@/pages/auth/login-page";
 import RegisterPage from "@/pages/auth/register-page";
-import ProtectedLayout from "@/layouts/protected-layout";
-import ApiPage from "@/pages/dashboard/api-page";
-import ClientPage from "@/pages/dashboard/client-page";
+import SimulationsDashboardPage from "@/pages/dashboard/simulations-dahboard-page";
+import ClientsDashboardPage from "@/pages/dashboard/clients-dashboard-page";
+import SaveDashboardPage from "@/pages/dashboard/save-dashboard-page";
 import ClientByIdPage from "@/pages/dashboard/client-by-id-page";
-import SavePage from "./pages/dashboard/save-page";
+import ApiTestPage from "@/pages/dashboard/api-test-page";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
 
-        <Route element={<MainLayout />}>
-          <Route index element={<HomePage />} />
-          <Route path="test" element={<h1>Test</h1>} />
+        <Route>
+          <Route index element={<Navigate to="/dashboard" replace />} />
         </Route>
 
         <Route path="dashboard" element={<ProtectedLayout />}>
           <Route element={<DashboardLayout />}>
-            <Route index element={<DashboardPage />} />
-            <Route path="simulator" element={<SimulatorPage />} />
-            <Route path="clients" element={<ClientPage />} />
+            <Route index element={<HomeDashboardPage />} />
+            <Route path="simulations" element={<SimulationsDashboardPage />} />
+            <Route path="clients" element={<ClientsDashboardPage />} />
             <Route path="clients/:clientId" element={<ClientByIdPage />} />
-            <Route path="save" element={<SavePage />} />
-            <Route path="api" element={<ApiPage />} />
+            <Route path="save" element={<SaveDashboardPage />} />
+            <Route path="api-test" element={<ApiTestPage />} />
             <Route path="*" element={<div>404</div>} />
           </Route>
         </Route>

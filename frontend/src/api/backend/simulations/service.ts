@@ -1,10 +1,17 @@
 import { backendApi } from "@/api/backend/client";
 import { isResponseError } from 'up-fetch';
-import { tokenUtils } from "@/lib/token";
 import { createSimulationSchemaResponse, getSimulationsSchemaResponse } from "./schema";
+import { useAuthStore } from "@/stores/auth-store";
 
-export async function createSimulation(clientId: number, data: any) {
-    const token = tokenUtils.get();
+export async function createSimulation(clientId: number, data: unknown) {
+
+    const { token, isAuthenticated } = useAuthStore.getState();
+    if (!isAuthenticated) {
+        return {
+            success: false,
+            message: "User is not authenticated",
+        };
+    }
     if (!token) {
         return {
             success: false,
@@ -42,7 +49,13 @@ export async function createSimulation(clientId: number, data: any) {
 }
 
 export async function getSimulations(clientId: number) {
-    const token = tokenUtils.get();
+    const { token, isAuthenticated } = useAuthStore.getState();
+    if (!isAuthenticated) {
+        return {
+            success: false,
+            message: "User is not authenticated",
+        };
+    }
     if (!token) {
         return {
             success: false,

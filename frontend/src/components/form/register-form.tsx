@@ -17,24 +17,24 @@ import { toast } from "sonner"
 import { useTransition } from "react"
 
 import {
-    signUpSchema,
-    type SignUpInput,
+    registerSchema,
+    type RegisterData,
 } from "@/schemas/auth-schema"
-import { signUp } from "@/api/backend/auth/service"
 import { useNavigate } from "react-router-dom"
 
 import {
     Send,
     Loader
 } from "lucide-react"
+import { signUp } from "@/api/backend/auth/service"
 
-export function SignupForm() {
+export function RegisterForm() {
 
     const [isPending, startTransition] = useTransition()
     const navigate = useNavigate()
 
-    const form = useForm<SignUpInput>({
-        resolver: zodResolver(signUpSchema),
+    const form = useForm<RegisterData>({
+        resolver: zodResolver(registerSchema),
         defaultValues: {
             fullName: "",
             email: "",
@@ -42,7 +42,7 @@ export function SignupForm() {
         },
     })
 
-    function onSubmit(values: SignUpInput) {
+    function onSubmit(values: RegisterData) {
         startTransition(async () => {
             const { success, message } = await signUp(values)
             if (success) {

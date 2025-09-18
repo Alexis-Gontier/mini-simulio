@@ -18,22 +18,22 @@ import { useTransition } from "react"
 
 import {
     loginSchema,
-    type LoginInput,
+    type LoginData,
 } from "@/schemas/auth-schema"
-import { signIn } from "@/api/backend/auth/service"
 import { useNavigate } from "react-router-dom"
 
 import {
     Send,
     Loader
 } from "lucide-react"
+import { signIn } from "@/api/backend/auth/service"
 
 export function LoginForm() {
 
     const [isPending, startTransition] = useTransition()
     const navigate = useNavigate()
 
-    const form = useForm<LoginInput>({
+    const form = useForm<LoginData>({
         resolver: zodResolver(loginSchema),
         defaultValues: {
             email: "",
@@ -41,7 +41,7 @@ export function LoginForm() {
         },
     })
 
-    function onSubmit(values: LoginInput) {
+    function onSubmit(values: LoginData) {
         startTransition(async () => {
             const { success, message } = await signIn(values)
             if (success) {
