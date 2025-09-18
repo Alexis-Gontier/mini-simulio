@@ -11,9 +11,13 @@ import {
 export default function SimpleBreadcrumb() {
   const location = useLocation()
 
-  const pathSegments = location.pathname.split('/').filter(segment => segment !== '')
+  const pathSegments = location.pathname
+    .split("/")
+    .filter((segment) => segment !== "")
 
-  const dashboardIndex = pathSegments.findIndex(segment => segment === 'dashboard')
+  const dashboardIndex = pathSegments.findIndex(
+    (segment) => segment === "dashboard"
+  )
 
   if (dashboardIndex === -1) return null
   const breadcrumbSegments = pathSegments.slice(dashboardIndex)
@@ -23,7 +27,8 @@ export default function SimpleBreadcrumb() {
       <BreadcrumbList>
         {breadcrumbSegments.map((segment, index) => {
           const isLast = index === breadcrumbSegments.length - 1
-          const href = '/' + pathSegments.slice(0, dashboardIndex + index + 1).join('/')
+          const href =
+            "/" + pathSegments.slice(0, dashboardIndex + index + 1).join("/")
 
           const label = segment.charAt(0).toUpperCase() + segment.slice(1)
 

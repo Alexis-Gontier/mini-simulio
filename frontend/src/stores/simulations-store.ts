@@ -33,19 +33,24 @@ function createFormStore<T, R = unknown>(
         setResult: (result: R) => set({ result }),
         clearFormData: () => set({ formData: null }),
         clearResult: () => set({ result: null }),
-        clearAll: () => set({ formData: null, result: null, isCalculating: false }),
+        clearAll: () =>
+          set({ formData: null, result: null, isCalculating: false }),
         clearStorage: () => api.persist.clearStorage(),
-        setCalculating: (calculating: boolean) => set({ isCalculating: calculating }),
+        setCalculating: (calculating: boolean) =>
+          set({ isCalculating: calculating }),
       }),
       {
         name: storeName,
         partialize: (state) => ({
           formData: state.formData,
           result: state.result,
-        })
+        }),
       }
     )
   )
 }
 
-export const useSimulationStore = createFormStore(calculerMensualite39Bis2AncienSchema, 'simulation-form-storage')
+export const useSimulationStore = createFormStore(
+  calculerMensualite39Bis2AncienSchema,
+  "simulation-form-storage"
+)

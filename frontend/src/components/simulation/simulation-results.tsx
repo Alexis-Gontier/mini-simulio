@@ -9,7 +9,7 @@ import {
   Building,
   Banknote,
   TrendingUp,
-  Save
+  Save,
 } from "lucide-react"
 import { Button } from "../shadcn-ui/button"
 import { Link } from "react-router-dom"
@@ -26,10 +26,7 @@ type SimulationResult = {
 }
 
 export default function SimulationResults() {
-  const {
-    result: simulationResult,
-    isCalculating,
-  } = useSimulationStore() as {
+  const { result: simulationResult, isCalculating } = useSimulationStore() as {
     result: SimulationResult
     isCalculating: boolean
   }
@@ -51,16 +48,18 @@ export default function SimulationResults() {
         <div className="text-center">
           <Calculator className="h-12 w-12 mx-auto mb-4 opacity-50" />
           <p>Aucune simulation effectuée.</p>
-          <p className="text-sm">Remplissez le formulaire pour voir les résultats.</p>
+          <p className="text-sm">
+            Remplissez le formulaire pour voir les résultats.
+          </p>
         </div>
       </div>
     )
   }
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('fr-FR', {
-      style: 'currency',
-      currency: 'EUR',
+    return new Intl.NumberFormat("fr-FR", {
+      style: "currency",
+      currency: "EUR",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount)
@@ -74,52 +73,54 @@ export default function SimulationResults() {
       value: formatCurrency(simulationResult.mensualite || 0),
       icon: Calculator,
       highlight: true,
-      description: "Montant mensuel à rembourser"
+      description: "Montant mensuel à rembourser",
     },
     {
       label: "Prix du bien",
       value: formatCurrency(simulationResult.prix_du_bien || 0),
       icon: Home,
-      description: "Prix d'achat du bien immobilier"
+      description: "Prix d'achat du bien immobilier",
     },
     {
       label: "Frais de notaire",
       value: formatCurrency(simulationResult.frais_de_notaire || 0),
       icon: FileText,
-      description: "Frais de notaire calculés"
+      description: "Frais de notaire calculés",
     },
     {
       label: "Garantie bancaire",
       value: formatCurrency(simulationResult.garantie_bancaire || 0),
       icon: Shield,
-      description: "Garantie demandée par la banque"
+      description: "Garantie demandée par la banque",
     },
     {
       label: "Travaux",
       value: formatCurrency(simulationResult.travaux || 0),
       icon: Wrench,
-      description: "Montant des travaux prévus"
+      description: "Montant des travaux prévus",
     },
     {
       label: "Frais d'agence",
       value: formatCurrency(simulationResult.frais_agence || 0),
       icon: Building,
-      description: "Frais d'agence immobilière"
+      description: "Frais d'agence immobilière",
     },
     {
       label: "Total à financer",
       value: formatCurrency(simulationResult.total_a_financer || 0),
       icon: Banknote,
       highlight: true,
-      description: "Montant total du financement"
+      description: "Montant total du financement",
     },
     {
       label: "Revenu minimum requis",
-      value: formatCurrency(simulationResult.revenu_acquereur_minimum_mensuel || 0),
+      value: formatCurrency(
+        simulationResult.revenu_acquereur_minimum_mensuel || 0
+      ),
       icon: TrendingUp,
       highlight: true,
-      description: "Revenu mensuel minimum nécessaire"
-    }
+      description: "Revenu mensuel minimum nécessaire",
+    },
   ]
 
   return (
@@ -133,18 +134,22 @@ export default function SimulationResults() {
               key={index}
               className={`flex items-center justify-between p-3 rounded-lg border ${
                 item.highlight
-                  ? 'bg-primary/5 border-primary/20'
-                  : 'bg-muted/30'
+                  ? "bg-primary/5 border-primary/20"
+                  : "bg-muted/30"
               }`}
             >
               <div className="flex items-center gap-3">
-                <Icon className={`h-5 w-5 ${
-                  item.highlight ? 'text-primary' : 'text-muted-foreground'
-                }`} />
+                <Icon
+                  className={`h-5 w-5 ${
+                    item.highlight ? "text-primary" : "text-muted-foreground"
+                  }`}
+                />
                 <div>
-                  <p className={`font-medium ${
-                    item.highlight ? 'text-primary' : ''
-                  }`}>
+                  <p
+                    className={`font-medium ${
+                      item.highlight ? "text-primary" : ""
+                    }`}
+                  >
                     {item.label}
                   </p>
                   <p className="text-xs text-muted-foreground">
@@ -155,7 +160,7 @@ export default function SimulationResults() {
               <Badge
                 variant={item.highlight ? "default" : "secondary"}
                 className={`font-mono ${
-                  item.highlight ? 'text-base px-3 py-1' : ''
+                  item.highlight ? "text-base px-3 py-1" : ""
                 }`}
               >
                 {item.value}
@@ -164,15 +169,12 @@ export default function SimulationResults() {
           )
         })}
       </div>
-        <Button
-            className="w-full"
-            asChild
-        >
-            <Link to="/dashboard/save">
-                <Save />
-                Enregister la simulation
-            </Link>
-        </Button>
+      <Button className="w-full" asChild>
+        <Link to="/dashboard/save">
+          <Save />
+          Enregister la simulation
+        </Link>
+      </Button>
     </div>
   )
 }

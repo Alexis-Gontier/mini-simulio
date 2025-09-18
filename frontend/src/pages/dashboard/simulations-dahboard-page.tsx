@@ -10,7 +10,6 @@ import { Separator } from "@/components/shadcn-ui/separator"
 import SimulationResults from "@/components/simulation/simulation-results"
 
 export default function SimulationsDashboardPage() {
-
   return (
     <PageLayout
       title="Simulateur"

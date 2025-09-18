@@ -1,9 +1,9 @@
-import LogoutButton from "@/components/ui/logout-button";
-import PageLayout from "@/layouts/page-layout";
-import { useAuthStore } from "@/stores/auth-store";
+import LogoutButton from "@/components/ui/logout-button"
+import PageLayout from "@/layouts/page-layout"
+import { useAuthStore } from "@/stores/auth-store"
 
 export default function HomeDashboardPage() {
-  const { user } = useAuthStore();
+  const { user } = useAuthStore()
 
   return (
     <PageLayout

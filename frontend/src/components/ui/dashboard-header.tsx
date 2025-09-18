@@ -1,9 +1,7 @@
-import { Button } from "@/components/shadcn-ui/button";
-import {
-    SidebarTrigger,
-} from "@/components/shadcn-ui/sidebar"
-import Breadcrumb from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/shadcn-ui/separator";
+import { Button } from "@/components/shadcn-ui/button"
+import { SidebarTrigger } from "@/components/shadcn-ui/sidebar"
+import Breadcrumb from "@/components/ui/breadcrumb"
+import { Separator } from "@/components/shadcn-ui/separator"
 
 export default function DashboardHeader() {
   return (
