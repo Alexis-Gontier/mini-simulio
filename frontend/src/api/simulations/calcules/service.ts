@@ -18,6 +18,7 @@ export async function calculerMensualite39Bis2Ancien(data: unknown) {
     }
   }
   try {
+    await new Promise(resolve => setTimeout(resolve, 2000))
     const response = await simulatorApi("/api/calculate", {
       method: "POST",
       schema: CalculerMensualite39Bis2AncienResponse,

@@ -1,14 +1,27 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
+import { useEffect } from "react"
 
-import { Form, FormField } from "@/components/shadcn-ui/form"
+import {
+  Form,
+  FormField,
+  FormControl,
+  FormItem,
+  FormLabel
+} from "@/components/shadcn-ui/form"
 import { Button } from "@/components/shadcn-ui/button"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/shadcn-ui/select"
 
-import { toast } from "sonner"
+// import { toast } from "sonner"
 
-import { useTransition } from "react"
-
-import { Send, Loader } from "lucide-react"
+import { useDebounce } from "@/hooks/use-debounce"
+import { Eraser } from "lucide-react"
 
 import {
   calculerMensualite39Bis2AncienSchema,
@@ -19,10 +32,33 @@ import { useSimulationStore } from "@/stores/simulations-store"
 import { SliderInput } from "@/components/ui/slider-input"
 import { DefaultInput } from "@/components/ui/default-input"
 
+const MOIS = [
+  { value: "01", label: "Janvier" },
+  { value: "02", label: "Février" },
+  { value: "03", label: "Mars" },
+  { value: "04", label: "Avril" },
+  { value: "05", label: "Mai" },
+  { value: "06", label: "Juin" },
+  { value: "07", label: "Juillet" },
+  { value: "08", label: "Août" },
+  { value: "09", label: "Septembre" },
+  { value: "10", label: "Octobre" },
+  { value: "11", label: "Novembre" },
+  { value: "12", label: "Décembre" },
+]
+
+const ANNEES = Array.from({ length: 11 }, (_, i) => {
+  const year = (2020 + i).toString()
+  return { value: year, label: year }
+})
+
 export default function SimulationForm() {
-  const [isPending, startTransition] = useTransition()
-  const { formData, setFormData, setResult, setCalculating, clearAll } =
-    useSimulationStore()
+  const { formData, setFormData, setResult, setCalculating, clearAll } = useSimulationStore()
+
+  // Date du jour
+  const today = new Date()
+  const currentMonth = (today.getMonth() + 1).toString().padStart(2, '0')
+  const currentYear = today.getFullYear().toString()
 
   const form = useForm<CalculerMensualite39Bis2Ancien>({
     resolver: zodResolver(calculerMensualite39Bis2AncienSchema),
@@ -36,44 +72,62 @@ export default function SimulationForm() {
       T: formData?.T ?? 0,
       ASSU: formData?.ASSU ?? 0,
       revalorisationBien: formData?.revalorisationBien ?? 0,
-      mois: formData?.mois ?? "07",
-      annee: formData?.annee ?? "2025",
+      mois: formData?.mois ?? currentMonth,
+      annee: formData?.annee ?? currentYear,
     },
   })
 
-  function onSubmit(values: CalculerMensualite39Bis2Ancien) {
-    console.log(values)
-    startTransition(async () => {
-      try {
-        setCalculating(true)
-        setFormData(values)
+  const calculateSimulation = async (values: CalculerMensualite39Bis2Ancien) => {
+    try {
+      setCalculating(true)
+      setFormData(values)
 
-        const response = await calculerMensualite39Bis2Ancien(values)
-        console.log("Response from API:", response)
-        if (response.success && response.data) {
-          console.log("Setting result:", response.data)
-          setResult(response.data)
-        } else {
-          throw new Error(response.message || "Erreur lors du calcul")
-        }
-        toast.success("Calcul de la mensualité réussi !")
-      } catch (error) {
-        console.error(error)
-        toast.error("Une erreur est survenue lors du calcul de la mensualité.")
-      } finally {
-        setCalculating(false)
+      const response = await calculerMensualite39Bis2Ancien(values)
+      if (response.success && response.data) {
+        setResult(response.data)
+      } else {
+        console.error("Erreur lors du calcul:", response.message)
+      }
+    } catch (error) {
+      console.error("Erreur lors du calcul:", error)
+    } finally {
+      setCalculating(false)
+    }
+  }
+
+  const debouncedCalculate = useDebounce(calculateSimulation, 1000)
+
+  // Observer les changements de formulaire pour déclencher le calcul automatique
+  useEffect(() => {
+    const subscription = form.watch((values) => {
+      const isValid = form.formState.isValid
+      if (isValid && values) {
+        debouncedCalculate(values as CalculerMensualite39Bis2Ancien)
       }
     })
-  }
+    return () => subscription.unsubscribe()
+  }, [form, debouncedCalculate])
 
   function clear() {
     clearAll()
-    form.reset()
+    form.reset({
+      C2: 0,
+      TRAVAUX: 0,
+      fraisAgence: 0,
+      N: 0,
+      apport: 0,
+      fraisNotaire: 0,
+      T: 0,
+      ASSU: 0,
+      revalorisationBien: 0,
+      mois: currentMonth,
+      annee: currentYear,
+    })
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <div className="space-y-6">
         {/* Prix du bien (C2) */}
         <FormField
           control={form.control}
@@ -183,26 +237,79 @@ export default function SimulationForm() {
           )}
         />
 
-        <div className="grid grid-cols-2 gap-2">
+        {/* Mois et Année */}
+        <div className="grid grid-cols-2 gap-4">
+          {/* Mois */}
+          <FormField
+            control={form.control}
+            name="mois"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Mois</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    value={field.value}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Sélectionner un mois" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {MOIS.map((mois) => (
+                        <SelectItem key={mois.value} value={mois.value}>
+                          {mois.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+
+          {/* Année */}
+          <FormField
+            control={form.control}
+            name="annee"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Année</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    value={field.value}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Sélectionner une année" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {ANNEES.map((annee) => (
+                        <SelectItem key={annee.value} value={annee.value}>
+                          {annee.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="flex justify-center mt-6">
           <Button
             variant="outline"
-            className="w-full cursor-pointer"
             type="button"
             onClick={clear}
-            disabled={isPending}
+            className="w-full cursor-pointer"
           >
+            <Eraser />
             Clear
           </Button>
-          <Button
-            type="submit"
-            className="w-full cursor-pointer"
-            disabled={isPending}
-          >
-            {isPending ? <Loader className="animate-spin" /> : <Send />}
-            Calculer
-          </Button>
         </div>
-      </form>
+      </div>
     </Form>
   )
 }
